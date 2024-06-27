@@ -5,6 +5,10 @@ from ..Utilities import TypeChecker
 from Solver.CMatrix import CoefMatrix
 
 
+def get_divided_arr(arr, div_value, ind1, ind2, ind3):
+    return arr[ind1] / div_value, arr[ind2] / div_value, arr[ind3] / div_value
+
+
 def create_helmholtz2d_matrix(
         a1,
         a2,
@@ -149,15 +153,11 @@ def create_helmholtz2d_matrix(
 
         for i1 in range(2, n1):
             count1 = (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2 * i1, 2 * i1 + 1, 2 * i1 - 1)
 
             for i2 in range(2, n2):
                 count2 = count1 + i2 - 1
-                p1x = s2[2 * i2] / d2
-                p2x = s2[2 * i2 + 1] / d2
-                p3x = s2[2 * i2 - 1] / d2
+                p1x, p2x, p3x = get_divided_arr(s2, d2, 2 * i2, 2 * i2+1, 2 * i2 - 1)
 
                 matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
                                   (count2, count2, p1x * p2x),
@@ -175,15 +175,11 @@ def create_helmholtz2d_matrix(
 
         # 1. Bottom
         count1 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
 
         for i2 in range(2, n2):
             count2 = count1 + i2 - 1
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2 * i2, 2 * i2+1, 2 * i2 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
                        (count2, count2 + 1, p1x * p2x),
@@ -194,15 +190,11 @@ def create_helmholtz2d_matrix(
 
         # 2. Top
         count1 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1+1, 2*n1 - 1)
 
         for i2 in range(2, n2):
             count2 = count1 + i2 - 1
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
                               (count2, count2 + 1, p1x * p2x),
@@ -213,15 +205,11 @@ def create_helmholtz2d_matrix(
 
         # 3. Left
         count1 = 0
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1+1, 2*i1 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2),
                               (count2, count2 + 1, p1x * p2x),
@@ -232,15 +220,11 @@ def create_helmholtz2d_matrix(
 
         # 4. Right
         count1 = n2 - 1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2+1, 2*n2-1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2),
                               (count2, count2 - 1, p1x * p3x),
@@ -257,12 +241,8 @@ def create_helmholtz2d_matrix(
 
         # 1. Bottom Left
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1]) ** 2),
                             (count2, count2 + 1, p1x * p2x),
@@ -272,12 +252,8 @@ def create_helmholtz2d_matrix(
 
         # 2. Bottom Right
         count2 = n2 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2]) ** 2),
                           (count2, count2 - 1, p1x * p3x),
@@ -287,12 +263,8 @@ def create_helmholtz2d_matrix(
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1]) ** 2),
                           (count2, count2 + 1, p1x * p2x),
@@ -302,12 +274,8 @@ def create_helmholtz2d_matrix(
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2]) ** 2),
                           (count2, count2 - 1, p1x * p3x),
@@ -485,21 +453,15 @@ def create_helmholtz3d_matrix(
 
         for i1 in tqdm(range(2, n1)):
             count1 = (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             for i2 in range(2, n2):
                 count2 = count1 + (i2 - 1) * n3
-                p1x = s2[2 * i2] / d2
-                p2x = s2[2 * i2 + 1] / d2
-                p3x = s2[2 * i2 - 1] / d2
+                p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
                 for i3 in range(2, n3):
                     count3 = count2 + i3 - 1
-                    p1y = s3[2 * i3] / d3
-                    p2y = s3[2 * i3 + 1] / d3
-                    p3y = s3[2 * i3 - 1] / d3
+                    p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3+1, 2*i3 - 1)
 
                     matrix_entries = [(count3, count3,
                         - p1y * (p3y + p2y)
@@ -521,21 +483,15 @@ def create_helmholtz3d_matrix(
 
         # 1. Bottom face
         count1 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
 
         for i2 in range(2, n2):
             count2 = count1 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
             for i3 in range(2, n3):
                 count3 = count2 + i3 - 1
-                p1y = s3[2 * i3] / d3
-                p2y = s3[2 * i3 + 1] / d3
-                p3y = s3[2 * i3 - 1] / d3
+                p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 + 1, 2*i3 - 1)
 
                 matrix_entries = [(count3, count3,
                     - p1y * (p3y + p2y)
@@ -551,21 +507,15 @@ def create_helmholtz3d_matrix(
 
         # 2. Top face
         count1 = (n1 - 1) * n2 * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
 
         for i2 in range(2, n2):
             count2 = count1 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
             for i3 in range(2, n3):
                 count3 = count2 + i3 - 1
-                p1y = s3[2 * i3] / d3
-                p2y = s3[2 * i3 + 1] / d3
-                p3y = s3[2 * i3 - 1] / d3
+                p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 + 1, 2*i3 - 1)
 
                 matrix_entries = [
                     (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2, i3]) ** 2),
@@ -578,21 +528,15 @@ def create_helmholtz3d_matrix(
 
         # 3. Left face
         count1 = 0
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             for i3 in range(2, n3):
                 count3 = count2 + i3 - 1
-                p1y = s3[2 * i3] / d3
-                p2y = s3[2 * i3 + 1] / d3
-                p3y = s3[2 * i3 - 1] / d3
+                p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 + 1, 2*i3 - 1)
 
                 matrix_entries = [
                     (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1, i3]) ** 2),
@@ -606,21 +550,15 @@ def create_helmholtz3d_matrix(
 
         # 4. Right face
         count1 = (n2 - 1) * n3
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, i1*2, 2* i1 + 1, 2*i1 - 1)
 
             for i3 in range(2, n3):
                 count3 = count2 + i3 - 1
-                p1y = s3[2 * i3] / d3
-                p2y = s3[2 * i3 + 1] / d3
-                p3y = s3[2 * i3 - 1] / d3
+                p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 +1, 2*i3 - 1)
 
                 matrix_entries = [
                     (count3, count3,
@@ -635,21 +573,15 @@ def create_helmholtz3d_matrix(
 
         # 5. Front face
         count1 = 0
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             for i2 in range(2, n2):
                 count3 = count2 + (i2 - 1) * n3
-                p1x = s2[2 * i2] / d2
-                p2x = s2[2 * i2 + 1] / d2
-                p3x = s2[2 * i2 - 1] / d2
+                p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
                 matrix_entries = [
                     (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2, 1]) ** 2),
@@ -663,21 +595,15 @@ def create_helmholtz3d_matrix(
 
         # 6. Back face
         count1 = n3 - 1
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2*n3, 2*n3  + 1, 2*n3 - 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             for i2 in range(2, n2):
                 count3 = count2 + (i2 - 1) * n3
-                p1x = s2[2 * i2] / d2
-                p2x = s2[2 * i2 + 1] / d2
-                p3x = s2[2 * i2 - 1] / d2
+                p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
                 matrix_entries = [
                     (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2, n3]) ** 2),
@@ -697,18 +623,12 @@ def create_helmholtz3d_matrix(
 
         # 1. Bottom-front edge
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         for i2 in range(2, n2):
             count3 = count2 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
             matrix_entries = [
                 (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2, 1]) ** 2),
@@ -721,18 +641,12 @@ def create_helmholtz3d_matrix(
 
         # 2. Bottom-back edge
         count2 = n3 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2*n3, 2*n3 + 1, 2*n3 - 1)
 
         for i2 in range(2, n2):
             count3 = count2 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 + 1, 2*i2 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -749,18 +663,12 @@ def create_helmholtz3d_matrix(
 
         # 3. Bottom-left edge
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         for i3 in range(2, n3):
             count3 = count2 + i3 - 1
-            p1y = s3[2 * i3] / d3
-            p2y = s3[2 * i3 + 1] / d3
-            p3y = s3[2 * i3 - 1] / d3
+            p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 + 1, 2*i3 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -778,48 +686,30 @@ def create_helmholtz3d_matrix(
 
         # 4. Bottom-right edge
         count2 = (n2 - 1) * n3
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
 
         for i3 in range(2, n3):
             count3 = count2 + i3 - 1
-            p1y = s3[2 * i3] / d3
-            p2y = s3[2 * i3 + 1] / d3
-            p3y = s3[2 * i3 - 1] / d3
+            p1y, p2y, p3y = get_divided_arr(s3, d3, 2*i3, 2*i3 + 1, 2*i3 - 1)
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[1, n2, i3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+            matrix_entries = [
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2, i3]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 + n2 * n3, p1z * p2z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 5. Top-front edge
         count2 = (n1 - 1) * n2 * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         for i2 in range(2, n2):
             count3 = count2 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 +1, 2*i2 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -836,18 +726,12 @@ def create_helmholtz3d_matrix(
 
         # 6. Top-back edge
         count2 = (n1 - 1) * n2 * n3 + n3 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 - 1)
 
         for i2 in range(2, n2):
             count3 = count2 + (i2 - 1) * n3
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2*i2, 2*i2 +1, 2*i2 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -864,18 +748,12 @@ def create_helmholtz3d_matrix(
 
         # 7. Top-left edge
         count2 = (n1 - 1) * n2 * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
 
         for i3 in range(2, n3):
             count3 = count2 + i3 - 1
-            p1y = s3[2 * i3] / d3
-            p2y = s3[2 * i3 + 1] / d3
-            p3y = s3[2 * i3 - 1] / d3
+            p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * i3, 2*i3 +1, 2*i3 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -892,18 +770,13 @@ def create_helmholtz3d_matrix(
 
         # 8. Top-right edge
         count2 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 +1, 2*n2 - 1)
+
 
         for i3 in range(2, n3):
             count3 = count2 + i3 - 1
-            p1y = s3[2 * i3] / d3
-            p2y = s3[2 * i3 + 1] / d3
-            p3y = s3[2 * i3 - 1] / d3
+            p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * i3, 2*i3 +1, 2*i3 - 1)
 
             matrix_entries = [
                 (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, i3]) ** 2),
@@ -916,18 +789,12 @@ def create_helmholtz3d_matrix(
 
         # 9. Front-left edge
         count2 = 0
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         for i1 in range(2, n1):
             count3 = count2 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 +1, 2*i1 - 1)
 
             matrix_entries = [
                 (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z)+ (omega / vel1[i1, 1, 1]) ** 2),
@@ -940,18 +807,12 @@ def create_helmholtz3d_matrix(
 
         # 10. Front-right edge
         count2 = (n2 - 1) * n3
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 +1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         for i1 in range(2, n1):
             count3 = count2 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries=[
                 (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2, 1]) ** 2),
@@ -964,18 +825,12 @@ def create_helmholtz3d_matrix(
 
         # 11. Back-left edge
         count2 = n3 - 1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 - 1)
 
         for i1 in range(2, n1):
             count3 = count2 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1+1, 2*i1 - 1)
 
             matrix_entries = [
                 (count3, count3,
@@ -991,18 +846,12 @@ def create_helmholtz3d_matrix(
 
         # 12. Back-right edge
         count2 = (n2 - 1) * n3 + n3 - 1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 +1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 - 1)
 
         for i1 in range(2, n1):
             count3 = count2 + (i1 - 1) * n2 * n3
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries = [
                 (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2, n3]) ** 2),
@@ -1021,15 +870,9 @@ def create_helmholtz3d_matrix(
 
         # 1. Bottom-left-front corner
         count3 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 , 3, 1)
 
         matrix_entries=[
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1, 1]) ** 2),
@@ -1040,15 +883,9 @@ def create_helmholtz3d_matrix(
 
         # 2. Bottom-left-back corner
         count3 = n3 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 -1 )
 
         matrix_entries = [
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1, n3]) ** 2),
@@ -1059,15 +896,9 @@ def create_helmholtz3d_matrix(
 
         # 3. Bottom-right-front corner
         count3 = (n2 - 1) * n3
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         matrix_entries=[
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2, 1]) ** 2),
@@ -1078,15 +909,9 @@ def create_helmholtz3d_matrix(
 
         # 4. Bottom-right-back corner
         count3 = (n2 - 1) * n3 + n3 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1 )
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 + 1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2*n3, 2*n3 +1, 2*n3 - 1)
 
         matrix_entries=[
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2, n3]) ** 2),
@@ -1098,15 +923,9 @@ def create_helmholtz3d_matrix(
 
         # 5. Top-left-front corner
         count3 = (n1 - 1) * n2 * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 , 3, 1)
 
         matrix_entries = [
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1, 1]) ** 2),
@@ -1118,15 +937,9 @@ def create_helmholtz3d_matrix(
 
         # 6. Top-left-back corner
         count3 = (n1 - 1) * n2 * n3 + n3 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2] / d2
-        p2x = s2[3] / d2
-        p3x = s2[1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2, 3, 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 - 1)
 
         matrix_entries = [
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1, n3]) ** 2),
@@ -1138,15 +951,9 @@ def create_helmholtz3d_matrix(
 
         # 7. Top-right-front corner
         count3 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2] / d3
-        p2y = s3[3] / d3
-        p3y = s3[1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 +1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2, 3, 1)
 
         matrix_entries = [
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, 1]) ** 2),
@@ -1158,15 +965,9 @@ def create_helmholtz3d_matrix(
 
         # 8. Top-right-back corner
         count3 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3 + n3 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2 * n2] / d2
-        p2x = s2[2 * n2 + 1] / d2
-        p3x = s2[2 * n2 - 1] / d2
-        p1y = s3[2 * n3] / d3
-        p2y = s3[2 * n3 + 1] / d3
-        p3y = s3[2 * n3 - 1] / d3
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*n2, 2*n2 +1, 2*n2 - 1)
+        p1y, p2y, p3y = get_divided_arr(s3, d3, 2 * n3, 2*n3 +1, 2*n3 - 1)
 
         matrix_entries = [
             (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, n3]) ** 2),
@@ -1337,15 +1138,11 @@ def create_helmholtz2d_matrix_even(
 
         for i1 in range(2, n1):
             count1 = (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             for i2 in range(1, n2 - 1):
                 count2 = count1 + i2
-                p1x = s2[2 * i2] / d2
-                p2x = s2[2 * i2 + 1] / d2
-                p3x = s2[2 * i2 - 1] / d2
+                p1x, p2x, p3x = get_divided_arr(s2, d2, 2 *i2, 2*i2 +1, 2*i2 - 1)
 
                 matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
                                   (count2, count2 + 1, p1x * p2x),
@@ -1363,15 +1160,11 @@ def create_helmholtz2d_matrix_even(
 
         # 1. Bottom
         count1 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
 
         for i2 in range(1, n2 - 1):
             count2 = count1 + i2
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2 *i2, 2*i2 +1, 2*i2 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
                               (count2, count2 + 1, p1x * p2x),
@@ -1381,15 +1174,11 @@ def create_helmholtz2d_matrix_even(
 
         # 2. Top
         count1 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 + 1, 2*n1 - 1)
 
         for i2 in range(1, n2 - 1):
             count2 = count1 + i2
-            p1x = s2[2 * i2] / d2
-            p2x = s2[2 * i2 + 1] / d2
-            p3x = s2[2 * i2 - 1] / d2
+            p1x, p2x, p3x = get_divided_arr(s2, d2, 2 *i2, 2*i2 +1, 2*i2 - 1)
 
             matrix_entries=[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
                             (count2, count2 + 1, p1x * p2x),
@@ -1400,15 +1189,11 @@ def create_helmholtz2d_matrix_even(
 
         # 3. Right
         count1 = n2 - 1
-        p1x = s2[2 * (n2 - 1)] / d2
-        p2x = s2[2 * (n2 - 1) + 1] / d2
-        p3x = s2[2 * (n2 - 1) - 1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2 *(n2-1), 2*(n2-1) +1, 2*(n2-1) - 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1+1, 2*i1 - 1)
 
             matrix_entries =[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2),
                              (count2, count2 - 1, p1x * p3x),
@@ -1419,15 +1204,11 @@ def create_helmholtz2d_matrix_even(
 
         # 4. Left
         count1 = 0
-        p1x = s2[0] / d2
-        p2x = s2[1] / d2
-        p3x = s2[1] / d2
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 0, 1, 1)
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2),
                               (count2, count2 + 1, p1x * p2x + p1x * p3x),
@@ -1444,12 +1225,9 @@ def create_helmholtz2d_matrix_even(
 
         # 1. Bottom Left
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[0] / d2
-        p2x = s2[1] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 0, 1, 1) #TODO: check
+
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 0]) ** 2),
                           (count2, count2 + 1, p1x * p2x + p1x * p3x),
@@ -1458,12 +1236,8 @@ def create_helmholtz2d_matrix_even(
 
         # 2. Bottom Right
         count2 = n2 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
-        p1x = s2[2 * (n2 - 1)] / d2
-        p2x = s2[2 * (n2 - 1) + 1] / d2
-        p3x = s2[2 * (n2 - 1) - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2 *(n2-1), 2(n2-1)+1, 2(n2-1) - 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2 - 1]) ** 2),
                           (count2, count2 - 1, p1x * p3x),
@@ -1472,12 +1246,9 @@ def create_helmholtz2d_matrix_even(
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[0] / d2
-        p2x = s2[1] / d2
-        p3x = s2[1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 0, 1, 1) # TODO: Is this the correct indices order?
+
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 0]) ** 2),
                           (count2, count2 + 1, p1x * p2x + p1x * p3x),
@@ -1486,12 +1257,8 @@ def create_helmholtz2d_matrix_even(
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
-        p1x = s2[2 * (n2 - 1)] / d2
-        p2x = s2[2 * (n2 - 1) + 1] / d2
-        p3x = s2[2 * (n2 - 1) - 1] / d2
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
+        p1x, p2x, p3x = get_divided_arr(s2, d2, 2*(n2-1), 2*(n2-1) + 1, 2*(n2 - 1) - 1)
 
         matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2 - 1]) ** 2),
                           (count2, count2 - 1, p1x * p3x),
@@ -1693,9 +1460,7 @@ def create_helmholtz2d_matrix_radial(
 
         for i1 in range(2, n1):
             count1 = (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 +1, 2*i1 - 1)
 
             for i2 in range(1, n2 - 1):
                 count2 = count1 + i2
@@ -1719,9 +1484,8 @@ def create_helmholtz2d_matrix_radial(
 
         # 1. Bottom
         count1 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
+
 
         for i2 in range(1, n2 - 1):
             count2 = count1 + i2
@@ -1738,9 +1502,7 @@ def create_helmholtz2d_matrix_radial(
 
         # 2. Top
         count1 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
 
         for i2 in range(1, n2 - 1):
             count2 = count1 + i2
@@ -1762,9 +1524,7 @@ def create_helmholtz2d_matrix_radial(
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 +1, 2*i1 - 1)
 
             matrix_entries= [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2),
                              (count2, count2 - 1, p1x * p3x),
@@ -1778,9 +1538,7 @@ def create_helmholtz2d_matrix_radial(
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 +1, 2*i1 - 1)
 
             matrix_entries=[(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2),
                             (count2, count2 + 1, p1x * p2x),
@@ -1797,9 +1555,7 @@ def create_helmholtz2d_matrix_radial(
 
         # 1. Bottom Left
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
         p1x = 2.0 / d2
         p2x = 2.0 / d2
 
@@ -1810,9 +1566,7 @@ def create_helmholtz2d_matrix_radial(
 
         # 2. Bottom Right
         count2 = n2 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
         p1x = gamma[2 * (n2 - 1)] / d2
         p2x = gamma_bar[2 * (n2 - 1) + 1] / d2
         p3x = gamma_bar[2 * (n2 - 1) - 1] / d2
@@ -1824,9 +1578,7 @@ def create_helmholtz2d_matrix_radial(
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
         p1x = 2.0 / d2
         p2x = 2.0 / d2
 
@@ -1837,9 +1589,7 @@ def create_helmholtz2d_matrix_radial(
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
         p1x = gamma[2 * (n2 - 1)] / d2
         p2x = gamma_bar[2 * (n2 - 1) + 1] / d2
         p3x = gamma_bar[2 * (n2 - 1) - 1] / d2
@@ -2054,9 +1804,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         for i1 in range(2, n1):
             count1 = (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 +1, 2*i1 - 1)
 
             for i2 in range(2, n2):
 
@@ -2096,9 +1844,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 1. Bottom
         count1 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
 
         for i2 in range(2, n2):
 
@@ -2129,9 +1875,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 2. Top
         count1 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
 
         for i2 in range(2, n2):
 
@@ -2169,9 +1913,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries=[ (count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2),
                              (count2, count2 + 1, p1x * p2x),
@@ -2188,9 +1930,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         for i1 in range(2, n1):
             count2 = count1 + (i1 - 1) * n2
-            p1z = s1[2 * i1] / d1
-            p2z = s1[2 * i1 + 1] / d1
-            p3z = s1[2 * i1 - 1] / d1
+            p1z, p2z, p3z = get_divided_arr(s1, d1, 2*i1, 2*i1 + 1, 2*i1 - 1)
 
             matrix_entries= [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2),
                              (count2, count2 - 1, p1x * p3x),
@@ -2207,9 +1947,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 1. Bottom Left
         count2 = 0
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
         p1x = gamma[2] / d2
         p2x = gamma_bar[3] / d2
         p3x = gamma_bar[1] / d2
@@ -2221,9 +1959,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 2. Bottom Right
         count2 = n2 - 1
-        p1z = s1[2] / d1
-        p2z = s1[3] / d1
-        p3z = s1[1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2, 3, 1)
         p1x = gamma[2 * n2] / d2
         p2x = gamma_bar[2 * n2 + 1] / d2
         p3x = gamma_bar[2 * n2 - 1] / d2
@@ -2235,9 +1971,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
         p1x = gamma[2] / d2
         p2x = gamma_bar[3] / d2
         p3x = gamma_bar[1] / d2
@@ -2249,9 +1983,7 @@ def create_helmholtz2d_matrix_radial_full(
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
-        p1z = s1[2 * n1] / d1
-        p2z = s1[2 * n1 + 1] / d1
-        p3z = s1[2 * n1 - 1] / d1
+        p1z, p2z, p3z = get_divided_arr(s1, d1, 2*n1, 2*n1 +1, 2*n1 - 1)
         p1x = gamma[2 * n2] / d2
         p2x = gamma_bar[2 * n2 + 1] / d2
         p3x = gamma_bar[2 * n2 - 1] / d2

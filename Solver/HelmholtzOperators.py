@@ -159,15 +159,13 @@ def create_helmholtz2d_matrix(
                 p2x = s2[2 * i2 + 1] / d2
                 p3x = s2[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2)
-
-                c_matrix.add_entry(count2, count2, p1x * p2x)
-
-                c_matrix.add_entry(count2, count2, p1x * p3x)
-
-                c_matrix.add_entry(count2, count2, p1z * p2z)
-
-                c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
+                                  (count2, count2, p1x * p2x),
+                                  (count2, count2, p1x * p3x),
+                                  (count2, count2, p1z * p2z),
+                                  (count2, count2 - n2, p1z * p3z)
+                                  ]
+                c_matrix.add_entries(matrix_entries)
 
     interior_nodes()
 
@@ -187,13 +185,12 @@ def create_helmholtz2d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
+                       (count2, count2 + 1, p1x * p2x),
+                       (count2, count2 - 1, p1x * p3x),
+                       (count2, count2 + n2, p1z * p2z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 2. Top
         count1 = (n1 - 1) * n2
@@ -207,13 +204,12 @@ def create_helmholtz2d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2,count2 - n2, p1z * p3z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
+                              (count2, count2 + 1, p1x * p2x),
+                              (count2, count2 - 1, p1x * p3x),
+                              (count2,count2 - n2, p1z * p3z)
+                            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 3. Left
         count1 = 0
@@ -227,13 +223,12 @@ def create_helmholtz2d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2),
+                              (count2, count2 + 1, p1x * p2x),
+                              (count2, count2 + n2, p1z * p2z),
+                              (count2, count2 - n2, p1z * p3z)
+                              ]
+            c_matrix.add_entries(matrix_entries)
 
         # 4. Right
         count1 = n2 - 1
@@ -247,13 +242,12 @@ def create_helmholtz2d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2),
+                              (count2, count2 - 1, p1x * p3x),
+                              (count2, count2 + n2, p1z * p2z),
+                              (count2, count2 - n2, p1z * p3z)
+                              ]
+            c_matrix.add_entries(matrix_entries)
 
     edge_nodes()
 
@@ -270,11 +264,11 @@ def create_helmholtz2d_matrix(
         p2x = s2[3] / d2
         p3x = s2[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1]) ** 2),
+                            (count2, count2 + 1, p1x * p2x),
+                            (count2, count2 + n2, p1z * p2z)
+                            ]
+        c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom Right
         count2 = n2 - 1
@@ -285,11 +279,11 @@ def create_helmholtz2d_matrix(
         p2x = s2[2 * n2 + 1] / d2
         p3x = s2[2 * n2 - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 + n2, p1z * p2z)
+                          ]
+        c_matrix.add_entries(matrix_entries)
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
@@ -300,11 +294,11 @@ def create_helmholtz2d_matrix(
         p2x = s2[3] / d2
         p3x = s2[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1]) ** 2),
+                          (count2, count2 + 1, p1x * p2x),
+                          (count2, count2 - n2, p1z * p3z)
+                          ]
+        c_matrix.add_entries(matrix_entries)
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
@@ -315,11 +309,11 @@ def create_helmholtz2d_matrix(
         p2x = s2[2 * n2 + 1] / d2
         p3x = s2[2 * n2 - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 - n2, p1z * p3z)
+                          ]
+        c_matrix.add_entries(matrix_entries)
 
     corner_nodes()
 
@@ -478,7 +472,6 @@ def create_helmholtz3d_matrix(
         s_ += 1.0
         return 1.0 / s_
 
-
     s1 = build_sarray(d1, n1_, a1_, pml_width1, pad_cells1)
     s2 = build_sarray(d2, n2_, a2_, pml_width2, pad_cells2)
     s3 = build_sarray(d3, n3_, a3_, pml_width3, pad_cells3)
@@ -508,25 +501,18 @@ def create_helmholtz3d_matrix(
                     p2y = s3[2 * i3 + 1] / d3
                     p3y = s3[2 * i3 - 1] / d3
 
-                    c_matrix.add_entry(count3, count3,
+                    matrix_entries = [(count3, count3,
                         - p1y * (p3y + p2y)
                         - p1x * (p3x + p2x)
                         - p1z * (p3z + p2z)
-                        + (omega / vel1[i1, i2, i3]) ** 2
-                    )
-
-                    c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                    c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                    c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                    c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                    c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-                    c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
-
+                        + (omega / vel1[i1, i2, i3]) ** 2),
+                                    (count3, count3 + 1, p1y * p2y),
+                                    (count3, count3 - 1, p1y * p3y),
+                                    (count3, count3 + n3, p1x * p2x),
+                                    (count3, count3 - n3, p1x * p3x),
+                                    (count3, count3 + n2 * n3, p1z * p2z),
+                                    (count3, count3 - n2 * n3, p1z * p3z)]
+                    c_matrix.add_entries(matrix_entries)
     interior_nodes()
 
     ####################################################################################################
@@ -551,22 +537,17 @@ def create_helmholtz3d_matrix(
                 p2y = s3[2 * i3 + 1] / d3
                 p3y = s3[2 * i3 - 1] / d3
 
-                c_matrix.add_entry(count3, count3,
+                matrix_entries = [(count3, count3,
                     - p1y * (p3y + p2y)
                     - p1x * (p3x + p2x)
                     - p1z * (p3z + p2z)
-                    + (omega / vel1[1, i2, i3]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+                    + (omega / vel1[1, i2, i3]) ** 2),
+                                  (count3, count3 + 1, p1y * p2y),
+                                  (count3, count3 - 1, p1y * p3y),
+                                  (count3, count3 + n3, p1x * p2x),
+                                  (count3, count3 - n3, p1x * p3x),
+                                  (count3, count3 + n2 * n3, p1z * p2z)]
+                c_matrix.add_entries(matrix_entries)
 
         # 2. Top face
         count1 = (n1 - 1) * n2 * n3
@@ -586,22 +567,14 @@ def create_helmholtz3d_matrix(
                 p2y = s3[2 * i3 + 1] / d3
                 p3y = s3[2 * i3 - 1] / d3
 
-                c_matrix.add_entry(count3, count3,
-                    - p1y * (p3y + p2y)
-                    - p1x * (p3x + p2x)
-                    - p1z * (p3z + p2z)
-                    + (omega / vel1[n1, i2, i3]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                matrix_entries = [
+                    (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2, i3]) ** 2),
+                    (count3, count3 + 1, p1y * p2y),
+                    (count3, count3 - 1, p1y * p3y),
+                    (count3, count3 + n3, p1x * p2x),
+                    (count3, count3 - n3, p1x * p3x),
+                    (count3, count3 - n2 * n3, p1z * p3z)]
+                c_matrix.add_entries(matrix_entries)
 
         # 3. Left face
         count1 = 0
@@ -621,22 +594,15 @@ def create_helmholtz3d_matrix(
                 p2y = s3[2 * i3 + 1] / d3
                 p3y = s3[2 * i3 - 1] / d3
 
-                c_matrix.add_entry(count3, count3,
-                    - p1y * (p3y + p2y)
-                    - p1x * (p3x + p2x)
-                    - p1z * (p3z + p2z)
-                    + (omega / vel1[i1, 1, i3]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-                c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                matrix_entries = [
+                    (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1, i3]) ** 2),
+                    (count3, count3 + 1, p1y * p2y),
+                    (count3, count3 - 1, p1y * p3y),
+                    (count3, count3 + n3, p1x * p2x),
+                    (count3, count3 + n2 * n3, p1z * p2z),
+                    (count3, count3 - n2 * n3, p1z * p3z)
+                ]
+                c_matrix.add_entries(matrix_entries)
 
         # 4. Right face
         count1 = (n2 - 1) * n3
@@ -656,22 +622,16 @@ def create_helmholtz3d_matrix(
                 p2y = s3[2 * i3 + 1] / d3
                 p3y = s3[2 * i3 - 1] / d3
 
-                c_matrix.add_entry(count3, count3,
-                    - p1y * (p3y + p2y)
-                    - p1x * (p3x + p2x)
-                    - p1z * (p3z + p2z)
-                    + (omega / vel1[i1, n2, i3]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-                c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                matrix_entries = [
+                    (count3, count3,
+                    - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2, i3]) ** 2),
+                    (count3, count3 + 1, p1y * p2y),
+                    (count3, count3 - 1, p1y * p3y),
+                    (count3, count3 - n3, p1x * p3x),
+                    (count3, count3 + n2 * n3, p1z * p2z),
+                    (count3, count3 - n2 * n3, p1z * p3z)
+                ]
+                c_matrix.add_entries(matrix_entries)
 
         # 5. Front face
         count1 = 0
@@ -691,22 +651,15 @@ def create_helmholtz3d_matrix(
                 p2x = s2[2 * i2 + 1] / d2
                 p3x = s2[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count3, count3,
-                    - p1y * (p3y + p2y)
-                    - p1x * (p3x + p2x)
-                    - p1z * (p3z + p2z)
-                    + (omega / vel1[i1, i2, 1]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-                c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-                c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                matrix_entries = [
+                    (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2, 1]) ** 2),
+                    (count3, count3 + 1, p1y * p2y),
+                    (count3, count3 + n3, p1x * p2x),
+                    (count3, count3 - n3, p1x * p3x),
+                    (count3, count3 + n2 * n3, p1z * p2z),
+                    (count3, count3 - n2 * n3, p1z * p3z)
+                ]
+                c_matrix.add_entries(matrix_entries)
 
         # 6. Back face
         count1 = n3 - 1
@@ -726,22 +679,15 @@ def create_helmholtz3d_matrix(
                 p2x = s2[2 * i2 + 1] / d2
                 p3x = s2[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count3, count3,
-                    - p1y * (p3y + p2y)
-                    - p1x * (p3x + p2x)
-                    - p1z * (p3z + p2z)
-                    + (omega / vel1[i1, i2, n3]) ** 2
-                )
-
-                c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-                c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-                c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-                c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-                c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                matrix_entries = [
+                    (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2, n3]) ** 2),
+                    (count3, count3 - 1, p1y * p3y),
+                    (count3, count3 + n3, p1x * p2x),
+                    (count3, count3 - n3, p1x * p3x),
+                    (count3, count3 + n2 * n3, p1z * p2z),
+                    (count3, count3 - n2 * n3, p1z * p3z)
+                ]
+                c_matrix.add_entries(matrix_entries)
 
     face_nodes()
 
@@ -764,20 +710,14 @@ def create_helmholtz3d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[1, i2, 1]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+            matrix_entries = [
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2, 1]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 + n2 * n3, p1z * p2z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom-back edge
         count2 = n3 - 1
@@ -794,20 +734,18 @@ def create_helmholtz3d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
                 - p1z * (p3z + p2z)
-                + (omega / vel1[1, i2, 1]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+                + (omega / vel1[1, i2, 1]) ** 2),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 + n2 * n3, p1z * p2z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 3. Bottom-left edge
         count2 = 0
@@ -824,20 +762,19 @@ def create_helmholtz3d_matrix(
             p2y = s3[2 * i3 + 1] / d3
             p3y = s3[2 * i3 - 1] / d3
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
                 - p1z * (p3z + p2z)
-                + (omega / vel1[1, 1, i3]) ** 2
-            )
+                + (omega / vel1[1, 1, i3]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 + n2 * n3, p1z * p2z)
+            ]
 
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+            c_matrix.add_entries(matrix_entries)
 
         # 4. Bottom-right edge
         count2 = (n2 - 1) * n3
@@ -884,20 +821,18 @@ def create_helmholtz3d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
                 - p1z * (p3z + p2z)
-                + (omega / vel1[1, i2, 1]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                + (omega / vel1[1, i2, 1]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 6. Top-back edge
         count2 = (n1 - 1) * n2 * n3 + n3 - 1
@@ -914,20 +849,18 @@ def create_helmholtz3d_matrix(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
                 - p1z * (p3z + p2z)
-                + (omega / vel1[n1, i2, n3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                + (omega / vel1[n1, i2, n3]) ** 2),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 7. Top-left edge
         count2 = (n1 - 1) * n2 * n3
@@ -944,20 +877,18 @@ def create_helmholtz3d_matrix(
             p2y = s3[2 * i3 + 1] / d3
             p3y = s3[2 * i3 - 1] / d3
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
                 - p1z * (p3z + p2z)
-                + (omega / vel1[n1, 1, i3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                + (omega / vel1[n1, 1, i3]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 8. Top-right edge
         count2 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3
@@ -974,20 +905,14 @@ def create_helmholtz3d_matrix(
             p2y = s3[2 * i3 + 1] / d3
             p3y = s3[2 * i3 - 1] / d3
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[n1, n2, i3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+            matrix_entries = [
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, i3]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 9. Front-left edge
         count2 = 0
@@ -1004,20 +929,14 @@ def create_helmholtz3d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[i1, 1, 1]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+            matrix_entries = [
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z)+ (omega / vel1[i1, 1, 1]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 + n2 * n3, p1z * p2z),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 10. Front-right edge
         count2 = (n2 - 1) * n3
@@ -1034,20 +953,14 @@ def create_helmholtz3d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[i1, n2, 1]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+            matrix_entries=[
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2, 1]) ** 2),
+                (count3, count3 + 1, p1y * p2y),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 + n2 * n3, p1z * p2z),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 11. Back-left edge
         count2 = n3 - 1
@@ -1064,20 +977,17 @@ def create_helmholtz3d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count3, count3,
+            matrix_entries = [
+                (count3, count3,
                 - p1y * (p3y + p2y)
                 - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[i1, 1, n3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+                - p1z * (p3z + p2z) + (omega / vel1[i1, 1, n3]) ** 2),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 + n3, p1x * p2x),
+                (count3, count3 + n2 * n3, p1z * p2z),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 12. Back-right edge
         count2 = (n2 - 1) * n3 + n3 - 1
@@ -1094,20 +1004,14 @@ def create_helmholtz3d_matrix(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count3, count3,
-                - p1y * (p3y + p2y)
-                - p1x * (p3x + p2x)
-                - p1z * (p3z + p2z)
-                + (omega / vel1[i1, n2, n3]) ** 2
-            )
-
-            c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-            c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-            c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
-
-            c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+            matrix_entries = [
+                (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2, n3]) ** 2),
+                (count3, count3 - 1, p1y * p3y),
+                (count3, count3 - n3, p1x * p3x),
+                (count3, count3 + n2 * n3, p1z * p2z),
+                (count3, count3 - n2 * n3, p1z * p3z)
+            ]
+            c_matrix.add_entries(matrix_entries)
 
     edge_nodes()
 
@@ -1127,18 +1031,12 @@ def create_helmholtz3d_matrix(
         p2y = s3[3] / d3
         p3y = s3[1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[1, 1, 1]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-        c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-        c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+        matrix_entries=[
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1, 1]) ** 2),
+            (count3, count3 + 1, p1y * p2y),
+            (count3, count3 + n3, p1x * p2x),
+            (count3, count3 + n2 * n3, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom-left-back corner
         count3 = n3 - 1
@@ -1152,18 +1050,12 @@ def create_helmholtz3d_matrix(
         p2y = s3[2 * n3 + 1] / d3
         p3y = s3[2 * n3 - 1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[1, 1, n3]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-        c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-        c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+        matrix_entries = [
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1, n3]) ** 2),
+            (count3, count3 - 1, p1y * p3y),
+            (count3, count3 + n3, p1x * p2x),
+            (count3, count3 + n2 * n3, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 3. Bottom-right-front corner
         count3 = (n2 - 1) * n3
@@ -1177,18 +1069,12 @@ def create_helmholtz3d_matrix(
         p2y = s3[3] / d3
         p3y = s3[1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[1, n2, 1]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-        c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-        c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+        matrix_entries=[
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2, 1]) ** 2),
+            (count3, count3 + 1, p1y * p2y),
+            (count3, count3 - n3, p1x * p3x),
+            (count3, count3 + n2 * n3, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 4. Bottom-right-back corner
         count3 = (n2 - 1) * n3 + n3 - 1
@@ -1202,18 +1088,13 @@ def create_helmholtz3d_matrix(
         p2y = s3[2 * n3 + 1] / d3
         p3y = s3[2 * n3 - 1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[1, n2, n3]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-        c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-        c_matrix.add_entry(count3, count3 + n2 * n3, p1z * p2z)
+        matrix_entries=[
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2, n3]) ** 2),
+            (count3, count3 - 1, p1y * p3y),
+            (count3, count3 - n3, p1x * p3x),
+            (count3, count3 + n2 * n3, p1z * p2z)
+        ]
+        c_matrix.add_entries(matrix_entries)
 
         # 5. Top-left-front corner
         count3 = (n1 - 1) * n2 * n3
@@ -1227,18 +1108,13 @@ def create_helmholtz3d_matrix(
         p2y = s3[3] / d3
         p3y = s3[1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[n1, 1, 1]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-        c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-        c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+        matrix_entries = [
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1, 1]) ** 2),
+            (count3, count3 + 1, p1y * p2y),
+            (count3, count3 + n3, p1x * p2x),
+            (count3, count3 - n2 * n3, p1z * p3z)
+        ]
+        c_matrix.add_entries(matrix_entries)
 
         # 6. Top-left-back corner
         count3 = (n1 - 1) * n2 * n3 + n3 - 1
@@ -1252,18 +1128,13 @@ def create_helmholtz3d_matrix(
         p2y = s3[2 * n3 + 1] / d3
         p3y = s3[2 * n3 - 1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[n1, 1, n3]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-        c_matrix.add_entry(count3, count3 + n3, p1x * p2x)
-
-        c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+        matrix_entries = [
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1, n3]) ** 2),
+            (count3, count3 - 1, p1y * p3y),
+            (count3, count3 + n3, p1x * p2x),
+            (count3, count3 - n2 * n3, p1z * p3z)
+        ]
+        c_matrix.add_entries(matrix_entries)
 
         # 7. Top-right-front corner
         count3 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3
@@ -1277,18 +1148,13 @@ def create_helmholtz3d_matrix(
         p2y = s3[3] / d3
         p3y = s3[1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[n1, n2, 1]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 + 1, p1y * p2y)
-
-        c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-        c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+        matrix_entries = [
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, 1]) ** 2),
+            (count3, count3 + 1, p1y * p2y),
+            (count3, count3 - n3, p1x * p3x),
+            (count3, count3 - n2 * n3, p1z * p3z)
+        ]
+        c_matrix.add_entries(matrix_entries)
 
         # 8. Top-right-back corner
         count3 = (n1 - 1) * n2 * n3 + (n2 - 1) * n3 + n3 - 1
@@ -1302,18 +1168,13 @@ def create_helmholtz3d_matrix(
         p2y = s3[2 * n3 + 1] / d3
         p3y = s3[2 * n3 - 1] / d3
 
-        c_matrix.add_entry(count3, count3,
-            - p1y * (p3y + p2y)
-            - p1x * (p3x + p2x)
-            - p1z * (p3z + p2z)
-            + (omega / vel1[n1, n2, n3]) ** 2
-        )
-
-        c_matrix.add_entry(count3, count3 - 1, p1y * p3y)
-
-        c_matrix.add_entry(count3, count3 - n3, p1x * p3x)
-
-        c_matrix.add_entry(count3, count3 - n2 * n3, p1z * p3z)
+        matrix_entries = [
+            (count3, count3, - p1y * (p3y + p2y) - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2, n3]) ** 2),
+            (count3, count3 - 1, p1y * p3y),
+            (count3, count3 - n3, p1x * p3x),
+            (count3, count3 - n2 * n3, p1z * p3z)
+        ]
+        c_matrix.add_entries(matrix_entries)
 
     corner_nodes()
 
@@ -1486,15 +1347,13 @@ def create_helmholtz2d_matrix_even(
                 p2x = s2[2 * i2 + 1] / d2
                 p3x = s2[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2)
-
-                c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-                c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
+                                  (count2, count2 + 1, p1x * p2x),
+                                  (count2, count2 - 1, p1x * p3x),
+                                  (count2, count2 + n2, p1z * p2z),
+                                  (count2, count2 - n2, p1z * p3z)
+                                  ]
+                c_matrix.add_entries(matrix_entries)
 
     interior_nodes()
 
@@ -1514,13 +1373,11 @@ def create_helmholtz2d_matrix_even(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
+                              (count2, count2 + 1, p1x * p2x),
+                              (count2, count2 - 1, p1x * p3x),
+                              (count2, count2 + n2, p1z * p2z)]
+            c_matrix.add_entries(matrix_entries)
 
         # 2. Top
         count1 = (n1 - 1) * n2
@@ -1534,13 +1391,12 @@ def create_helmholtz2d_matrix_even(
             p2x = s2[2 * i2 + 1] / d2
             p3x = s2[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries=[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
+                            (count2, count2 + 1, p1x * p2x),
+                            (count2, count2 - 1, p1x * p3x),
+                            (count2, count2 - n2, p1z * p3z)
+                            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 3. Right
         count1 = n2 - 1
@@ -1554,13 +1410,12 @@ def create_helmholtz2d_matrix_even(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries =[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2),
+                             (count2, count2 - 1, p1x * p3x),
+                             (count2, count2 + n2, p1z * p2z),
+                             (count2, count2 - n2, p1z * p3z)
+                             ]
+            c_matrix.add_entries(matrix_entries)
 
         # 4. Left
         count1 = 0
@@ -1574,13 +1429,12 @@ def create_helmholtz2d_matrix_even(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x + p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2),
+                              (count2, count2 + 1, p1x * p2x + p1x * p3x),
+                              (count2, count2 + n2, p1z * p2z),
+                              (count2, count2 - n2, p1z * p3z)
+                              ]
+            c_matrix.add_entries(matrix_entries)
 
     edge_nodes()
 
@@ -1597,11 +1451,10 @@ def create_helmholtz2d_matrix_even(
         p2x = s2[1] / d2
         p3x = s2[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 0]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x + p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 0]) ** 2),
+                          (count2, count2 + 1, p1x * p2x + p1x * p3x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom Right
         count2 = n2 - 1
@@ -1612,11 +1465,10 @@ def create_helmholtz2d_matrix_even(
         p2x = s2[2 * (n2 - 1) + 1] / d2
         p3x = s2[2 * (n2 - 1) - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2 - 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2 - 1]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
@@ -1627,11 +1479,10 @@ def create_helmholtz2d_matrix_even(
         p2x = s2[1] / d2
         p3x = s2[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 0]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x + p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 0]) ** 2),
+                          (count2, count2 + 1, p1x * p2x + p1x * p3x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
@@ -1642,11 +1493,10 @@ def create_helmholtz2d_matrix_even(
         p2x = s2[2 * (n2 - 1) + 1] / d2
         p3x = s2[2 * (n2 - 1) - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2 - 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2 - 1]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
     corner_nodes()
 
@@ -1853,15 +1703,13 @@ def create_helmholtz2d_matrix_radial(
                 p2x = gamma_bar[2 * i2 + 1] / d2
                 p3x = gamma_bar[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2)
-
-                c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-                c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                matrix_entries=[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
+                                (count2, count2 + 1, p1x * p2x),
+                                (count2, count2 - 1, p1x * p3x),
+                                (count2, count2 + n2, p1z * p2z),
+                                (count2, count2 - n2, p1z * p3z)
+                                ]
+                c_matrix.add_entries(matrix_entries)
 
     interior_nodes()
 
@@ -1881,13 +1729,12 @@ def create_helmholtz2d_matrix_radial(
             p2x = gamma_bar[2 * i2 + 1] / d2
             p3x = gamma_bar[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+            matrix_entries=[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
+                            (count2, count2 + 1, p1x * p2x),
+                            (count2, count2 - 1, p1x * p3x),
+                            (count2, count2 + n2, p1z * p2z)
+                            ]
+            c_matrix.add_entries(matrix_entries)
 
         # 2. Top
         count1 = (n1 - 1) * n2
@@ -1901,13 +1748,11 @@ def create_helmholtz2d_matrix_radial(
             p2x = gamma_bar[2 * i2 + 1] / d2
             p3x = gamma_bar[2 * i2 - 1] / d2
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
+                              (count2, count2 + 1, p1x * p2x),
+                              (count2, count2 - 1, p1x * p3x),
+                              (count2, count2 - n2, p1z * p3z)]
+            c_matrix.add_entries(matrix_entries)
 
         # 3. Right
         count1 = n2 - 1
@@ -1921,14 +1766,11 @@ def create_helmholtz2d_matrix_radial(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
-
+            matrix_entries= [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2 - 1]) ** 2),
+                             (count2, count2 - 1, p1x * p3x),
+                             (count2, count2 + n2, p1z * p2z),
+                             (count2, count2 - n2, p1z * p3z)]
+            c_matrix.add_entries(matrix_entries)
         # 4. Left
         count1 = 0
         p1x = 2.0 / d2
@@ -1940,13 +1782,12 @@ def create_helmholtz2d_matrix_radial(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries=[(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[i1, 0]) ** 2),
+                            (count2, count2 + 1, p1x * p2x),
+                            (count2, count2 + n2, p1z * p2z),
+                            (count2, count2 - n2, p1z * p3z)
+                            ]
+            c_matrix.add_entries(matrix_entries)
 
     edge_nodes()
 
@@ -1962,11 +1803,10 @@ def create_helmholtz2d_matrix_radial(
         p1x = 2.0 / d2
         p2x = 2.0 / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[1, 0]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[1, 0]) ** 2),
+                          (count2, count2 + 1, p1x * p2x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom Right
         count2 = n2 - 1
@@ -1977,11 +1817,10 @@ def create_helmholtz2d_matrix_radial(
         p2x = gamma_bar[2 * (n2 - 1) + 1] / d2
         p3x = gamma_bar[2 * (n2 - 1) - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2 - 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2 - 1]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
@@ -1991,11 +1830,10 @@ def create_helmholtz2d_matrix_radial(
         p1x = 2.0 / d2
         p2x = 2.0 / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[n1, 0]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * p2x - p1z * (p3z + p2z) + (omega / vel1[n1, 0]) ** 2),
+                          (count2, count2 + 1, p1x * p2x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
@@ -2006,11 +1844,10 @@ def create_helmholtz2d_matrix_radial(
         p2x = gamma_bar[2 * (n2 - 1) + 1] / d2
         p3x = gamma_bar[2 * (n2 - 1) - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2 - 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2 - 1]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
     corner_nodes()
 
@@ -2229,15 +2066,12 @@ def create_helmholtz2d_matrix_radial_full(
                     p2x = gamma_bar[2 * i2 + 1] / d2
                     p3x = gamma_bar[2 * i2 - 1] / d2
 
-                    c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2)
-
-                    c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-                    c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-                    c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-                    c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                    matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
+                                      (count2, count2 + 1, p1x * p2x),
+                                      (count2, count2 - 1, p1x * p3x),
+                                      (count2, count2 + n2, p1z * p2z),
+                                      (count2, count2 - n2, p1z * p3z)
+                                      ]
 
                 else:
                     count2 = count1 + i2 - 1
@@ -2245,15 +2079,14 @@ def create_helmholtz2d_matrix_radial_full(
                     p2x = 1.0 / d2
                     p3x = 1.0 / d2
 
-                    c_matrix.add_entry(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2)
+                    matrix_entries = [(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, i2]) ** 2),
+                                      (count2, count2 + 1, 2.0 * p1x * p2x),
+                                      (count2, count2 - 1, 2.0 * p1x * p3x),
+                                      (count2, count2 + n2, p1z * p2z),
+                                      (count2, count2 - n2, p1z * p3z)
+                                      ]
 
-                    c_matrix.add_entry(count2, count2 + 1, 2.0 * p1x * p2x)
-
-                    c_matrix.add_entry(count2, count2 - 1, 2.0 * p1x * p3x)
-
-                    c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-                    c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                c_matrix.add_entries(matrix_entries)
 
     interior_nodes()
 
@@ -2275,27 +2108,24 @@ def create_helmholtz2d_matrix_radial_full(
                 p2x = gamma_bar[2 * i2 + 1] / d2
                 p3x = gamma_bar[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2)
-
-                c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
+                matrix_entries=[(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
+                                (count2, count2 + 1, p1x * p2x),
+                                (count2, count2 - 1, p1x * p3x),
+                                (count2, count2 + n2, p1z * p2z)
+                                ]
             else:
                 count2 = count1 + i2 - 1
                 p1x = 1.0 / d2
                 p2x = 1.0 / d2
                 p3x = 1.0 / d2
 
-                c_matrix.add_entry(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2)
+                matrix_entries = [(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, i2]) ** 2),
+                                  (count2, count2 + 1, 2.0 * p1x * p2x),
+                                  (count2, count2 - 1, 2.0 * p1x * p3x),
+                                  (count2, count2 + n2, p1z * p2z)
+                                  ]
 
-                c_matrix.add_entry(count2, count2 + 1, 2.0 * p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, 2.0 * p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+            c_matrix.add_entries(matrix_entries)
 
         # 2. Top
         count1 = (n1 - 1) * n2
@@ -2311,13 +2141,11 @@ def create_helmholtz2d_matrix_radial_full(
                 p2x = gamma_bar[2 * i2 + 1] / d2
                 p3x = gamma_bar[2 * i2 - 1] / d2
 
-                c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2)
-
-                c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+                matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
+                                  (count2, count2 + 1, p1x * p2x),
+                                  (count2, count2 - 1, p1x * p3x),
+                                  (count2, count2 - n2, p1z * p3z)
+                                  ]
 
             else:
                 count2 = count1 + i2 - 1
@@ -2325,13 +2153,13 @@ def create_helmholtz2d_matrix_radial_full(
                 p2x = 1.0 / d2
                 p3x = 1.0 / d2
 
-                c_matrix.add_entry(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2)
+                matrix_entries = [(count2, count2, -2.0 * p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, i2]) ** 2),
+                                  (count2, count2 + 1, 2.0 * p1x * p2x),
+                                  (count2, count2 - 1, 2.0 * p1x * p3x),
+                                  (count2, count2 - n2, p1z * p3z)
+                                  ]
 
-                c_matrix.add_entry(count2, count2 + 1, 2.0 * p1x * p2x)
-
-                c_matrix.add_entry(count2, count2 - 1, 2.0 * p1x * p3x)
-
-                c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            c_matrix.add_entries(matrix_entries)
 
         # 3. Left
         count1 = 0
@@ -2345,13 +2173,12 @@ def create_helmholtz2d_matrix_radial_full(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2)
-
-            c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries=[ (count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, 1]) ** 2),
+                             (count2, count2 + 1, p1x * p2x),
+                             (count2, count2 + n2, p1z * p2z),
+                             (count2, count2 - n2, p1z * p3z)
+                             ]
+            c_matrix.add_entries(matrix_entries)
 
         # 4. Right
         count1 = n2 - 1
@@ -2365,13 +2192,12 @@ def create_helmholtz2d_matrix_radial_full(
             p2z = s1[2 * i1 + 1] / d1
             p3z = s1[2 * i1 - 1] / d1
 
-            c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2)
-
-            c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-            c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
-
-            c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+            matrix_entries= [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[i1, n2]) ** 2),
+                             (count2, count2 - 1, p1x * p3x),
+                             (count2, count2 + n2, p1z * p2z),
+                             (count2, count2 - n2, p1z * p3z)
+                             ]
+            c_matrix.add_entries(matrix_entries)
 
     edge_nodes()
 
@@ -2388,11 +2214,10 @@ def create_helmholtz2d_matrix_radial_full(
         p2x = gamma_bar[3] / d2
         p3x = gamma_bar[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, 1]) ** 2),
+                          (count2, count2 + 1, p1x * p2x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 2. Bottom Right
         count2 = n2 - 1
@@ -2403,11 +2228,10 @@ def create_helmholtz2d_matrix_radial_full(
         p2x = gamma_bar[2 * n2 + 1] / d2
         p3x = gamma_bar[2 * n2 - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 + n2, p1z * p2z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[1, n2]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 + n2, p1z * p2z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 3. Top Left
         count2 = (n1 - 1) * n2
@@ -2418,11 +2242,10 @@ def create_helmholtz2d_matrix_radial_full(
         p2x = gamma_bar[3] / d2
         p3x = gamma_bar[1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1]) ** 2)
-
-        c_matrix.add_entry(count2, count2 + 1, p1x * p2x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, 1]) ** 2),
+                          (count2, count2 + 1, p1x * p2x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
         # 4. Top Right
         count2 = (n1 - 1) * n2 + n2 - 1
@@ -2433,11 +2256,10 @@ def create_helmholtz2d_matrix_radial_full(
         p2x = gamma_bar[2 * n2 + 1] / d2
         p3x = gamma_bar[2 * n2 - 1] / d2
 
-        c_matrix.add_entry(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2]) ** 2)
-
-        c_matrix.add_entry(count2, count2 - 1, p1x * p3x)
-
-        c_matrix.add_entry(count2, count2 - n2, p1z * p3z)
+        matrix_entries = [(count2, count2, - p1x * (p3x + p2x) - p1z * (p3z + p2z) + (omega / vel1[n1, n2]) ** 2),
+                          (count2, count2 - 1, p1x * p3x),
+                          (count2, count2 - n2, p1z * p3z)]
+        c_matrix.add_entries(matrix_entries)
 
     corner_nodes()
 

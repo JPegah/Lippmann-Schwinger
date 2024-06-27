@@ -9,3 +9,7 @@ class CoefMatrix():
         self.data.append(data_value)
         self.rows.append(row)
         self.cols.append(col)
+
+    def add_entries(self, entry_list):
+        for ent in entry_list:
+            self.add_entry(ent[0], ent[1], ent[2])

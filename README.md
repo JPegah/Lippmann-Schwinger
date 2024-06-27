@@ -20,15 +20,17 @@ bash p01.sh
 - The above runs will create some files in the directory **Lippmann-Schwinger/Data/**, and all figures will be 
 created in the directory **Lippmann-Schwinger/Fig/**.
 
-# How to install the packages (assumes conda is installed).
+# Installation
+The package requires python 3.9.
 
+Create a conda environment and activate the environemnt. 
 ```ruby
-conda create -n py39 python=3.9
-conda activate py39
-conda install -c anaconda numpy=1.23.5
-conda install -c anaconda scipy=1.10.0
-conda install -c numba numba=0.57.1
-conda install matplotlib=3.7.1
-conda install tqdm=4.66.1
-
+conda create -n <your-env-name> python=3.9
+conda activate <your-env-name>
 ```
+Install the required packages with the following command:
+```ruby
+pip install -r requirements.txt
+```
+
+# Citation
